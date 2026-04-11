@@ -37,7 +37,7 @@
 
       <a href="index.html" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.webp" alt=""> -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
         <!-- Uncomment the line below if you also wish to use an text logo -->
         <!-- <h1 class="sitename">Style</h1>  -->
       </a>
@@ -53,15 +53,15 @@
           <!-- <img src="assets/img/logo.webp" alt=""> -->
           <h1 class="sitename">Ravi Ranjan</h1>
         </a>
-
-        <div class="social-links text-center">
-          <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-          <a href="#" class="google-plus"><i class="bi bi-skype"></i></a>
-          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
-        </div>
-
+        {% if resume.socials.all %}
+          <div class="social-links text-center">
+            {% for social in resume.socials.all %}
+              {% if social.is_active %}
+                  <a href="{{ social.url }}" target="_blank" class="mx-2 social-icon"><i class="{{ social.icon_class }}"></i></a>
+                {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
         <ul>
           <li><a href="#hero">Home</a></li>
           <li><a href="#about">About</a></li>
@@ -954,12 +954,15 @@
       <div class="copyright text-center ">
         <p>© <span>Copyright</span> <strong class="px-1 sitename">Ravi Ranjan</strong> <span>All Rights Reserved</span></p>
       </div>
+      {% if resume.socials.all %}
       <div class="social-links d-flex justify-content-center">
-        <a href=""><i class="bi bi-twitter-x"></i></a>
-        <a href=""><i class="bi bi-facebook"></i></a>
-        <a href=""><i class="bi bi-instagram"></i></a>
-        <a href=""><i class="bi bi-linkedin"></i></a>
+        {% for social in resume.socials.all %}
+          {% if social.is_active %}
+              <a href="{{ social.url }}" target="_blank" class="mx-2 social-icon"><i class="{{ social.icon_class }}"></i></a>
+            {% endif %}
+        {% endfor %}
       </div>
+    {% endif %}
     </div>
 
   </footer>
