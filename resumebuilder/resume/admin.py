@@ -1,5 +1,7 @@
 from django.contrib import admin
 from .models import Resume, ResumeStat, ResumeSocial, ResumeFloatingCard, ResumeSkill, ResumeJourney, SkillCategory, Skill, Profession, Certification, Journey, Excellence, ServiceSection, Service, PortfolioSection, PortfolioCategory, PortfolioItem, TestimonialSection, Testimonial, ReviewPlatform, FAQSection, FAQ, ContactSection, ContactMessage
+from django.utils.html import format_html
+from django.urls import reverse
 
 class ServiceInline(admin.TabularInline):
     model = Service
@@ -62,18 +64,34 @@ class ResumeStatInline(admin.TabularInline):
 
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'title', 'theme', 'is_active', 'updated_at')
-    list_filter = ('theme', 'is_active')
+    list_display = ('name', 'title', 'theme', 'pdf_template', 'preview_pdf', 'is_active', 'updated_at')
+    list_filter = ('theme', 'pdf_template', 'is_active')
+
     fieldsets = (
-        ('Basic Info', {'fields': ('name', 'title', 'email', 'phone', 'tags', 'tag_line', 'short_desc')}),
+        ('Basic Info', {'fields': ('name', 'title', 'position', 'email', 'phone', 'address', 'website', 'tags', 'tag_line', 'short_desc')}),
         ('Images', {'fields': ('profile_image', 'banner_image')}),
         ('Resume Details', {'fields': ('summary', 'skills', 'experience', 'education')}),
-        ('Theme', {'fields': ('theme',)}),
+
+        # ✅ FIX HERE
+        ('Design Settings', {'fields': ('theme', 'pdf_template')}),
+
         ('Status', {'fields': ('is_active',)}),
     )
-    
-    inlines = [ResumeStatInline, ResumeSocialInline, ResumeFloatingCardInline, ResumeSkillInline, ResumeJourneyInline]
-    
+
+    inlines = [
+        ResumeStatInline,
+        ResumeSocialInline,
+        ResumeFloatingCardInline,
+        ResumeSkillInline,
+        ResumeJourneyInline
+    ]
+    def preview_pdf(self, obj):
+            return format_html(
+            '<a href="{}" target="_blank">Preview PDF</a>',
+            reverse('resume_pdf_preview', args=[obj.id])
+        )
+
+    preview_pdf.short_description = "Preview"
 @admin.register(SkillCategory)
 class SkillCategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'resume', 'order')

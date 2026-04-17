@@ -1,38 +1,51 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.pagesizes import A4
+import pdfkit
+from django.template.loader import render_to_string
+from django.conf import settings
 from io import BytesIO
 
 
-def generate_resume_pdf(resume):
-    buffer = BytesIO()
+def generate_resume_pdf(resume, request):
+    # ✅ Absolute image URL (works for PDF)
+    image_url = None
+    if resume.profile_image:
+        image_url = request.build_absolute_uri(resume.profile_image.url)
 
-    doc = SimpleDocTemplate(
-        buffer,
-        pagesize=A4,
-        rightMargin=40,
-        leftMargin=40,
-        topMargin=40,
-        bottomMargin=40
-    )
+    template_name = f"resume/pdf/{resume.pdf_template}.html"
 
-    styles = getSampleStyleSheet()
-    content = []
+    try:
+        html = render_to_string(
+            template_name,
+            {
+                "resume": resume,
+                "image_url": image_url
+            }
+        )
+    except Exception:
+        # fallback template
+        html = render_to_string(
+            "resume/pdf/pdf1.html",
+            {
+                "resume": resume,
+                "image_url": image_url
+            }
+        )
 
-    content.append(Paragraph(f"<b>{resume.name}</b>", styles['Title']))
-    content.append(Paragraph(resume.title, styles['Heading2']))
-    content.append(Spacer(1, 12))
+    config = None
+    if getattr(settings, "WKHTMLTOPDF_PATH", None):
+        config = pdfkit.configuration(wkhtmltopdf=settings.WKHTMLTOPDF_PATH)
 
-    content.append(Paragraph(
-        f"<b>Email:</b> {resume.email}<br/>"
-        f"<b>Phone:</b> {resume.phone}",
-        styles['Normal']
-    ))
+    # ✅ PDF options (important for images + layout)
+    options = {
+        "enable-local-file-access": "",
+        "encoding": "UTF-8",
+        "quiet": "",
+        "page-size": "A4",
+        "margin-top": "10mm",
+        "margin-right": "10mm"
+    }
+        # ✅ CREATE PDF
+    pdf = pdfkit.from_string(html, False, configuration=config, options=options)
 
-    content.append(Spacer(1, 16))
-    content.append(Paragraph("<b>Professional Summary</b>", styles['Heading3']))
-    content.append(Paragraph(resume.summary, styles['Normal']))
-
-    doc.build(content)
-    buffer.seek(0)
+    # ✅ RETURN BUFFER
+    buffer = BytesIO(pdf)
     return buffer

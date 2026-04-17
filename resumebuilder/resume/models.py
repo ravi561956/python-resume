@@ -16,11 +16,18 @@ class Resume(models.Model):
         ('FolioOne', 'Theme D - FolioOne'),
         # Add more themes here
     )
-
+    PDF_TEMPLATE_CHOICES = [
+        ('pdf1', 'Modern Sidebar'),
+        ('pdf2', 'ATS Friendly'),
+        ('pdf3', 'Minimal ATS'),
+    ]
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=150)
     email = models.EmailField()
+    position = models.CharField(default='Senior technical lead', max_length=250)
     phone = models.CharField(max_length=20)
+    address = models.CharField(default='Noida,India', max_length=250)
+    website = models.CharField(default='', max_length=250)
     tags = models.CharField(
         max_length=255,
         blank=True,
@@ -32,6 +39,11 @@ class Resume(models.Model):
         blank=True,
         default=''
         )
+    pdf_template = models.CharField(
+        max_length=20,
+        choices=PDF_TEMPLATE_CHOICES,
+        default='pdf1'
+    )
     short_desc = models.TextField(
         blank=True,
         default='',
@@ -82,6 +94,7 @@ class Resume(models.Model):
     def __str__(self):
         return self.name
 
+
 class ResumeStat(models.Model):
     resume = models.ForeignKey(
         Resume,
@@ -103,8 +116,8 @@ class ResumeStat(models.Model):
 
     def __str__(self):
         return f"{self.value} - {self.label}"
-    
-#For social media
+     
+# For social media
 class ResumeSocial(models.Model):
     PLATFORM_CHOICES = (
         ('twitter', 'Twitter'),

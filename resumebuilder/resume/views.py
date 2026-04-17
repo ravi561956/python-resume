@@ -8,7 +8,7 @@ from .models import ContactSection
 from django.http import FileResponse
 from .utils.resume_pdf import generate_resume_pdf
 from .utils.resume_docx import generate_resume_docx
-
+from django.http import HttpResponse
 
 def resume_view(request):
     resume = Resume.objects.filter(is_active=True).first()
@@ -57,7 +57,7 @@ def submit_contact_form(request):
 
 def download_resume_pdf(request):
     resume = Resume.objects.filter(is_active=True).first()
-    buffer = generate_resume_pdf(resume)
+    buffer = generate_resume_pdf(resume, request)
 
     return FileResponse(
         buffer,
@@ -75,3 +75,9 @@ def download_resume_docx(request):
         as_attachment=True,
         filename="resume.docx"
     )
+
+def preview_resume_pdf(request, pk):
+    resume = Resume.objects.get(id=pk)
+    buffer = generate_resume_pdf(resume, request)
+
+    return HttpResponse(buffer.getvalue(), content_type='application/pdf')
