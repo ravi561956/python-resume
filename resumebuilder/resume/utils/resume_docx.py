@@ -5,8 +5,25 @@ from datetime import datetime
 from io import BytesIO
 
 
+# =============================
+# HELPER: REMOVE SPACING
+# =============================
+def set_paragraph_spacing(paragraph, before=5, after=5, line=1):
+    fmt = paragraph.paragraph_format
+    fmt.space_before = Pt(before)
+    fmt.space_after = Pt(after)
+    fmt.line_spacing = line
+
+
 def generate_resume_docx(resume):
     doc = Document()
+
+    # =============================
+    # GLOBAL STYLE FIX (IMPORTANT)
+    # =============================
+    style = doc.styles['Normal']
+    style.paragraph_format.space_before = Pt(0)
+    style.paragraph_format.space_after = Pt(0)
 
     # =============================
     # PAGE MARGINS
@@ -18,57 +35,70 @@ def generate_resume_docx(resume):
     section.right_margin = Inches(0.5)
 
     # =============================
-    # HEADER (NAME + TITLE + DATE)
+    # HEADER
     # =============================
-    header_table = doc.add_table(rows=1, cols=2)
-    header_table.autofit = True
+    table = doc.add_table(rows=1, cols=2)
+    table.autofit = True
 
-    # LEFT SIDE
-    left_cell = header_table.rows[0].cells[0]
-    p = left_cell.paragraphs[0]
+    left = table.rows[0].cells[0]
+    right = table.rows[0].cells[1]
+
+    # LEFT
+    p = left.paragraphs[0]
     run = p.add_run(resume.name)
     run.bold = True
     run.font.size = Pt(20)
+    set_paragraph_spacing(p)
 
-    p = left_cell.add_paragraph()
-    p.add_run(resume.position).font.size = Pt(12)
+    p = left.add_paragraph(resume.position)
+    p.runs[0].font.size = Pt(12)
+    set_paragraph_spacing(p)
 
-    # RIGHT SIDE (DATE)
-    right_cell = header_table.rows[0].cells[1]
-    p = right_cell.paragraphs[0]
+    # RIGHT
+    p = right.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     current_date = datetime.now().strftime("%d %b %Y")
     p.add_run(f"Date: {current_date}")
+    set_paragraph_spacing(p)
 
     # =============================
     # CONTACT
     # =============================
-    contact = doc.add_paragraph()
-    contact.add_run("Phone: ").bold = True
-    contact.add_run(resume.phone + "\n")
+    p = doc.add_paragraph()
+    p.add_run("Phone: ").bold = True
+    p.add_run(resume.phone)
+    set_paragraph_spacing(p)
 
-    contact.add_run("Email: ").bold = True
-    contact.add_run(resume.email + "\n")
+    p = doc.add_paragraph()
+    p.add_run("Email: ").bold = True
+    p.add_run(resume.email)
+    set_paragraph_spacing(p)
 
-    contact.add_run("Address: ").bold = True
-    contact.add_run(resume.address + "\n")
+    p = doc.add_paragraph()
+    p.add_run("Address: ").bold = True
+    p.add_run(resume.address)
+    set_paragraph_spacing(p)
 
-    contact.add_run("Website: ").bold = True
-    contact.add_run(getattr(resume, "website", ""))
+    if getattr(resume, "website", ""):
+        p = doc.add_paragraph()
+        p.add_run("Website: ").bold = True
+        p.add_run(resume.website)
+        set_paragraph_spacing(p)
 
     # =============================
     # SUMMARY
     # =============================
     if resume.summary:
-        p = doc.add_paragraph()
-        run = p.add_run("\nProfessional Summary\n")
+        p = doc.add_paragraph("\nProfessional Summary")
+        run = p.runs[0]
         run.bold = True
         run.font.size = Pt(14)
-
-        doc.add_paragraph(resume.summary)
+        set_paragraph_spacing(p, before=6, after=2)
+        p = doc.add_paragraph(resume.summary)
+        set_paragraph_spacing(p)
 
     # =============================
-    # SKILLS (3 COLUMN TABLE)
+    # SKILLS
     # =============================
     skills = []
     for category in resume.skill_categories.all():
@@ -76,42 +106,56 @@ def generate_resume_docx(resume):
             skills.append(skill.name)
 
     if skills:
-        p = doc.add_paragraph()
-        run = p.add_run("\nSkills\n")
+        p = doc.add_paragraph("\nSkills")
+        run = p.runs[0]
         run.bold = True
         run.font.size = Pt(14)
+        set_paragraph_spacing(p, before=6, after=2)
 
         table = doc.add_table(rows=1, cols=3)
-        cols = table.rows[0].cells
 
-        col1 = skills[0::3]
-        col2 = skills[1::3]
-        col3 = skills[2::3]
+        col_data = [
+            skills[0::3],
+            skills[1::3],
+            skills[2::3],
+        ]
 
-        for i, col_data in enumerate([col1, col2, col3]):
-            for skill in col_data:
-                cols[i].add_paragraph(f"• {skill}")
+        for i, col in enumerate(col_data):
+            cell = table.rows[0].cells[i]
+            for skill in col:
+                p = cell.add_paragraph(f"• {skill}")
+                set_paragraph_spacing(p, before=0, after=0)
+
+        # remove hidden spacing inside table
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    set_paragraph_spacing(paragraph, 0, 0)
 
     # =============================
     # EXPERIENCE
     # =============================
     if resume.journey.all():
-        p = doc.add_paragraph()
-        run = p.add_run("\nWork Experience\n")
+        p = doc.add_paragraph("\nWork Experience")
+        run = p.runs[0]
         run.bold = True
         run.font.size = Pt(14)
+        set_paragraph_spacing(p, before=6, after=2)
 
         for journey in resume.journey.all():
             for item in journey.excellences.all():
-                p = doc.add_paragraph()
-                run = p.add_run(item.title + "\n")
-                run.bold = True
+                p = doc.add_paragraph(item.title)
+                p.runs[0].bold = True
+                set_paragraph_spacing(p)
 
-                p.add_run(f"{item.company} | {item.date_range}\n")
-                p.add_run(item.description)
+                p = doc.add_paragraph(f"{item.company} | {item.date_range}")
+                set_paragraph_spacing(p)
+
+                p = doc.add_paragraph(item.description)
+                set_paragraph_spacing(p)
 
     # =============================
-    # CERTIFICATIONS (2 COLUMN)
+    # CERTIFICATIONS
     # =============================
     certs = []
     for profession in resume.professions.all():
@@ -120,37 +164,51 @@ def generate_resume_docx(resume):
                 certs.append(cert.title)
 
     if certs:
-        p = doc.add_paragraph()
-        run = p.add_run("\nCertifications\n")
+        p = doc.add_paragraph("\nCertifications")
+        run = p.runs[0]
         run.bold = True
         run.font.size = Pt(14)
+        set_paragraph_spacing(p, before=6, after=2)
 
         table = doc.add_table(rows=1, cols=2)
-        cols = table.rows[0].cells
 
-        col1 = certs[0::2]
-        col2 = certs[1::2]
+        col_data = [
+            certs[0::2],
+            certs[1::2],
+        ]
 
-        for i, col_data in enumerate([col1, col2]):
-            for cert in col_data:
-                cols[i].add_paragraph(f"• {cert}")
+        for i, col in enumerate(col_data):
+            cell = table.rows[0].cells[i]
+            for cert in col:
+                p = cell.add_paragraph(f"• {cert}")
+                set_paragraph_spacing(p)
+
+        # remove spacing inside table
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    set_paragraph_spacing(paragraph, 0, 0)
 
     # =============================
     # EDUCATION
     # =============================
     if resume.journeys.all():
-        p = doc.add_paragraph()
-        run = p.add_run("\nEducation\n")
+        p = doc.add_paragraph("\nEducation")
+        run = p.runs[0]
         run.bold = True
         run.font.size = Pt(14)
+        set_paragraph_spacing(p, before=6, after=2)
 
         for item in resume.journeys.all():
             if item.is_active:
-                doc.add_paragraph(f"{item.description} ({item.year})")
+                p = doc.add_paragraph(f"{item.description} ({item.year})")
+                set_paragraph_spacing(p)
 
     # =============================
-    # SAVE FILE
+    # SAVE
     # =============================
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
+
+    return buffer

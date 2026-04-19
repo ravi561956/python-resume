@@ -180,6 +180,7 @@
             background-color: #eee;
             border-radius: 20px;
             overflow: hidden;
+            margin-left: 10px;
           }
           
           .progress-bar {
@@ -239,10 +240,12 @@
                                     {% for category in resume.skill_categories.all %}
                                         {% for skill in category.skills.all %}
                                         <div class="skill">
-                                            <span>{{ skill.name }}</span>
+                                          <ul>
+                                            <li>{{ skill.name }}</li>
                                             <div class="progress">
                                                 <div class="progress-bar" style="width: {{ skill.percentage }}%;">{{ skill.percentage }}%</div>
                                             </div>
+                                          </ul>
                                         </div>
                                         {% endfor %}
                                     {% endfor %}
@@ -258,7 +261,9 @@
                                     {% for cert in profession.certifications.all %}
                                         {% if cert.is_active %}
                                             <div class="skill-badge">
-                                                {{ cert.title }}
+                                              <p>  <svg width="10" height="10" style="margin-right:5px;">
+                                                <polygon points="0,0 10,5 0,10" fill="green"/>
+                                              </svg> {{ cert.title }}</p>
                                             </div>
                                         {% endif %}
                                     {% endfor %}
