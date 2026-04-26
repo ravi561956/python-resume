@@ -161,8 +161,7 @@
 
       <!-- Section Title -->
       <div class="container section-title">
-        <h2>About</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        <h2>About myself</h2>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -190,36 +189,17 @@
           <div class="col-lg-7" data-aos="fade-left" data-aos-delay="300">
             <div class="about-content">
               <div class="intro">
-                <h2>Hi, I'm {{ resume.name }} - a Creative Developer</h2>
+                <h2>Hi, I'm {{ resume.name }} - {{ resume.position }}</h2>
                 <p>{{ resume.summary }}</p>
               </div>
-            {% if resume.skills_grid.all %}
-              <div class="skills-grid">
-
-                {% for skill in resume.skills_grid.all %}
-                  {% if skill.is_active %}
-                  <div class="skill-item"
-                      data-aos="{{ skill.aos_animation }}"
-                      data-aos-delay="{{ skill.aos_delay }}">
-
-                    <div class="skill-icon">
-                      <i class="{{ skill.icon_class }}"></i>
-                    </div>
-
-                    <h4>{{ skill.title }}</h4>
-                    <p>{{ skill.description }}</p>
-
-                  </div>
-                  {% endif %}
-                {% endfor %}
-
-              </div>
-            {% endif %}
             {% if resume.journeys.all %}
               <div class="journey-timeline"
                   data-aos="fade-up"
                   data-aos-delay="300">
-
+                  <h2>
+                    <i class="bi bi-mortarboard"></i>
+                    Academic Excellence
+                  </h2>
                 {% for item in resume.journeys.all %}
                   {% if item.is_active %}
                   <div class="timeline-item">
@@ -261,16 +241,17 @@
 
     <!-- Skills Section -->
     <section id="skills" class="skills section">
-
+      <div class="container section-title">
+        <h2>Skills </h2>
+      </div>
       <div class="container" data-aos="fade-up" data-aos-delay="100">
-
         <div class="row">
-          <div class="col-lg-8">
+          <div class="col-lg-12">
             <div class="skills-grid">
-              <div class="row g-4">
+              <div class="row g-12">
                 {% for category in resume.skill_categories.all %}
                   {% if category.skills.all %}
-                    <div class="col-md-6"
+                    <div class="col-md-4"
                         data-aos="flip-left"
                         data-aos-delay="{{ category.aos_delay|default:200 }}">
 
@@ -318,88 +299,18 @@
 
             </div><!-- End Skills Grid -->
           </div>
-
-          {% for profession in resume.professions.all %}
-            <div class="col-lg-4">
-              <div class="skills-summary"
-                  data-aos="fade-left"
-                  data-aos-delay="{{ profession.aos_delay }}">
-
-                <!-- Title -->
-                <h3>{{ profession.title }}</h3>
-
-                <!-- Description -->
-                <p>{{ profession.short_desc }}</p>
-
-                <!-- ================= STATS ================= -->
-                <div class="summary-stats">
-                  {% for stat in profession.resume_stats.all %}
-                    <div class="stat-item"
-                        data-aos="zoom-in"
-                        data-aos-delay="{{ stat.aos_delay }}">
-
-                      <div class="stat-circle">
-                        <i class="{{ stat.icon_class }}"></i>
-                      </div>
-
-                      <div class="stat-info">
-                        <span class="stat-number">{{ stat.value }}+</span>
-                        <span class="stat-label">{{ stat.label }}</span>
-                      </div>
-
-                    </div>
-                  {% empty %}
-                    <p>No statistics added</p>
-                  {% endfor %}
-                </div>
-
-                <!-- ================= CERTIFICATIONS ================= -->
-                {% if profession.certifications.exists %}
-                  <div class="skills-badges"
-                      data-aos="fade-up"
-                      data-aos-delay="600">
-
-                    <h4>Certifications</h4>
-
-                    <div class="badge-list">
-                      {% for cert in profession.certifications.all %}
-                        {% if cert.is_active %}
-                          <div class="skill-badge">
-                            {{ cert.title }}
-                          </div>
-                        {% endif %}
-                      {% endfor %}
-                    </div>
-
-                  </div>
-                {% endif %}
-
-              </div>
-            </div>
-          {% empty %}
-            <p>No professions found</p>
-          {% endfor %}
-
         </div>
 
       </div>
-
     </section><!-- /Skills Section -->
 
     <!-- Resume Section -->
     <section id="resume" class="resume section">
-
-      <!-- Section Title -->
-      <div class="container section-title">
-        <h2>Resume</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row">
 
           {% for journey in resume.journey.all %}
-          <div class="col-lg-6"
+          <div class="col-lg-12"
               data-aos="{% if forloop.first %}fade-right{% else %}fade-left{% endif %}"
               data-aos-delay="{{ journey.aos_delay }}">
 
@@ -461,246 +372,224 @@
           {% endfor %}
 
         </div>
-      </div>
-
-
-    </section><!-- /Resume Section -->
-
-    <!-- Services Section -->
-    <section id="services" class="services section">
-
-      {% for section in resume.servicesection.all %}
-
-      <!-- Section Title -->
-      <div class="container section-title"
-          data-aos="fade-up"
-          data-aos-delay="{{ section.aos_delay }}">
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.subtitle }}</p>
-      </div><!-- End Section Title -->
-
-      <div class="container"
-          data-aos="fade-up"
-          data-aos-delay="{{ section.aos_delay }}">
-        <div class="row g-4">
-
-          {% for service in section.services.all %}
-          {% if service.is_active %}
-          <div class="col-lg-4 col-md-6"
-              data-aos="fade-up"
-              data-aos-delay="{{ forloop.counter|add:'1' }}00">
-
-            <div class="service-item">
-              <div class="icon">
-                <i class="{{ service.icon_class }}"></i>
-              </div>
-
-              <h3>{{ service.title }}</h3>
-              <p>{{ service.description }}</p>
-
-              {% if service.learn_more_url %}
-              <div class="card-links">
-                <a href="{{ service.learn_more_url }}" class="link-item">
-                  Learn More
-                  <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
-              {% endif %}
-            </div>
-
-          </div><!-- End Service Item -->
-          {% endif %}
-          {% endfor %}
-
-        </div>
-      </div>
-
-      {% endfor %}
-
-    </section><!-- /Services Section -->
-
-
-
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio section">
-
-      {% for section in resume.portfolio_sections.all %}
-      {% if section.is_active %}
-
-      <!-- Section Title -->
-      <div class="container section-title">
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.subtitle }}</p>
-      </div><!-- End Section Title -->
-
-      <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="isotope-layout"
-            data-default-filter="*"
-            data-layout="masonry"
-            data-sort="original-order">
-
-          <!-- Filters -->
-          <ul class="portfolio-filters isotope-filters"
-              data-aos="fade-up"
-              data-aos-delay="200">
-
-            <li data-filter="*" class="filter-active">
-              <i class="bi bi-grid-3x3"></i> All Projects
-            </li>
-
-            {% for category in section.categories.all %}
-            <li data-filter=".filter-{{ category.slug }}">
-              {{ category.title }}
-            </li>
-            {% endfor %}
-          </ul>
-
-          <!-- Portfolio Grid -->
-          <div class="row g-4 isotope-container"
-              data-aos="fade-up"
-              data-aos-delay="300">
-
-            {% for item in section.items.all %}
-            {% if item.is_active %}
-
-            <div class="col-xl-3 col-lg-4 col-md-6
-                        portfolio-item isotope-item
-                        {% for cat in item.categories.all %}
-                          filter-{{ cat.slug }}
-                        {% endfor %}">
-
-              <article class="portfolio-entry">
-                <figure class="entry-image">
-
-                  <img src="{{ item.image.url }}"
-                      class="img-fluid"
-                      alt="{{ item.title }}"
-                      loading="lazy">
-
-                  <div class="entry-overlay">
-                    <div class="overlay-content">
-
-                      <div class="entry-meta">
-                        {% for cat in item.categories.all %}
-                          {{ cat.title }}{% if not forloop.last %}, {% endif %}
+        {% if resume.professions.all %}
+          <div class="row">
+            {% for profession in resume.professions.all %}
+              <div class="col-lg-4">
+                <div class="skills-summary"
+                    data-aos="fade-left"
+                    data-aos-delay="{{ profession.aos_delay }}">
+                  <!-- ================= CERTIFICATIONS ================= -->
+                  {% if profession.certifications.all %}
+                    <div class="skills-badges"
+                        data-aos="fade-up"
+                        data-aos-delay="600">
+                      <h4>Certifications</h4>
+                      <div class="badge-list">
+                        {% for cert in profession.certifications.all %}
+                          {% if cert.is_active %}
+                            <div class="skill-badge">
+                              {{ cert.title }}
+                            </div>
+                          {% endif %}
                         {% endfor %}
                       </div>
-
-                      <h3 class="entry-title">{{ item.title }}</h3>
-
-                      <div class="entry-links">
-                        <a href="{{ item.image.url }}"
-                          class="glightbox"
-                          data-gallery="portfolio-gallery"
-                          data-glightbox="title: {{ item.title }};">
-                          <i class="bi bi-arrows-angle-expand"></i>
-                        </a>
-
-                        {% if item.project_url %}
-                        <a href="{{ item.project_url }}">
-                          <i class="bi bi-arrow-right"></i>
-                        </a>
-                        {% endif %}
-                      </div>
-
                     </div>
-                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% empty %}
+              <p>No professions found</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </section><!-- /Resume Section -->
+    <!-- Services Section -->
+    {% if resume.servicesection.all %}
+      <section id="services" class="services section">
 
-                </figure>
-              </article>
+        {% for section in resume.servicesection.all %}
 
-            </div><!-- End Portfolio Item -->
+        <!-- Section Title -->
+        <div class="container section-title"
+            data-aos="fade-up"
+            data-aos-delay="{{ section.aos_delay }}">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.subtitle }}</p>
+        </div><!-- End Section Title -->
+
+        <div class="container"
+            data-aos="fade-up"
+            data-aos-delay="{{ section.aos_delay }}">
+          <div class="row g-4">
+
+            {% for service in section.services.all %}
+            {% if service.is_active %}
+            <div class="col-lg-4 col-md-6"
+                data-aos="fade-up"
+                data-aos-delay="{{ forloop.counter|add:'1' }}00">
+
+              <div class="service-item">
+                <div class="icon">
+                  <i class="{{ service.icon_class }}"></i>
+                </div>
+
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.description }}</p>
+
+                {% if service.learn_more_url %}
+                <div class="card-links">
+                  <a href="{{ service.learn_more_url }}" class="link-item">
+                    Learn More
+                    <i class="bi bi-arrow-right"></i>
+                  </a>
+                </div>
+                {% endif %}
+              </div>
+
+            </div><!-- End Service Item -->
             {% endif %}
             {% endfor %}
 
-          </div><!-- End Portfolio Container -->
+          </div>
+        </div>
+
+        {% endfor %}
+
+      </section><!-- /Services Section -->
+    {% endif %}
+    <!-- Portfolio Section -->
+    {% if resume.portfolio_sections.all %}
+      <section id="portfolio" class="portfolio section">
+
+        {% for section in resume.portfolio_sections.all %}
+        {% if section.is_active %}
+
+        <!-- Section Title -->
+        <div class="container section-title">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.subtitle }}</p>
+        </div><!-- End Section Title -->
+
+        <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
+
+          <div class="isotope-layout"
+              data-default-filter="*"
+              data-layout="masonry"
+              data-sort="original-order">
+
+            <!-- Filters -->
+            <ul class="portfolio-filters isotope-filters"
+                data-aos="fade-up"
+                data-aos-delay="200">
+
+              <li data-filter="*" class="filter-active">
+                <i class="bi bi-grid-3x3"></i> All Projects
+              </li>
+
+              {% for category in section.categories.all %}
+              <li data-filter=".filter-{{ category.slug }}">
+                {{ category.title }}
+              </li>
+              {% endfor %}
+            </ul>
+
+            <!-- Portfolio Grid -->
+            <div class="row g-4 isotope-container"
+                data-aos="fade-up"
+                data-aos-delay="300">
+
+              {% for item in section.items.all %}
+              {% if item.is_active %}
+
+              <div class="col-xl-3 col-lg-4 col-md-6
+                          portfolio-item isotope-item
+                          {% for cat in item.categories.all %}
+                            filter-{{ cat.slug }}
+                          {% endfor %}">
+
+                <article class="portfolio-entry">
+                  <figure class="entry-image">
+
+                    <img src="{{ item.image.url }}"
+                        class="img-fluid"
+                        alt="{{ item.title }}"
+                        loading="lazy">
+
+                    <div class="entry-overlay">
+                      <div class="overlay-content">
+
+                        <div class="entry-meta">
+                          {% for cat in item.categories.all %}
+                            {{ cat.title }}{% if not forloop.last %}, {% endif %}
+                          {% endfor %}
+                        </div>
+
+                        <h3 class="entry-title">{{ item.title }}</h3>
+
+                        <div class="entry-links">
+                          <a href="{{ item.image.url }}"
+                            class="glightbox"
+                            data-gallery="portfolio-gallery"
+                            data-glightbox="title: {{ item.title }};">
+                            <i class="bi bi-arrows-angle-expand"></i>
+                          </a>
+
+                          {% if item.project_url %}
+                          <a href="{{ item.project_url }}">
+                            <i class="bi bi-arrow-right"></i>
+                          </a>
+                          {% endif %}
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </figure>
+                </article>
+
+              </div><!-- End Portfolio Item -->
+              {% endif %}
+              {% endfor %}
+
+            </div><!-- End Portfolio Container -->
+
+          </div>
 
         </div>
 
-      </div>
+        {% endif %}
+        {% endfor %}
 
-      {% endif %}
-      {% endfor %}
-
-    </section><!-- /Portfolio Section -->
-
+      </section><!-- /Portfolio Section -->
+    {% endif %}
     <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials section">
+    {% if resume.testimonial_sections.all %}
+      <section id="testimonials" class="testimonials section">
 
-      {% for section in resume.testimonial_sections.all %}
-      {% if section.is_active %}
+        {% for section in resume.testimonial_sections.all %}
+        {% if section.is_active %}
 
-      <!-- Section Title -->
-      <div class="container section-title">
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.subtitle }}</p>
-      </div><!-- End Section Title -->
+        <!-- Section Title -->
+        <div class="container section-title">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.subtitle }}</p>
+        </div><!-- End Section Title -->
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <!-- ================= CRITIC REVIEWS ================= -->
-        <div class="row">
-          <div class="col-12">
-            <div class="critic-reviews" data-aos="fade-up" data-aos-delay="300">
-              <div class="row">
+          <!-- ================= CRITIC REVIEWS ================= -->
+          <div class="row">
+            <div class="col-12">
+              <div class="critic-reviews" data-aos="fade-up" data-aos-delay="300">
+                <div class="row">
 
-                {% for testimonial in section.testimonials.all|slice:":3" %}
-                {% if testimonial.is_active %}
-                <div class="col-md-4">
-                  <div class="critic-review">
-                    <div class="review-quote">"</div>
-
-                    <div class="stars">
-                      {% for i in "12345"|slice:":testimonial.rating" %}
-                        <i class="bi bi-star-fill"></i>
-                      {% endfor %}
-                    </div>
-
-                    <p>{{ testimonial.quote }}</p>
-
-                    <div class="critic-info">
-                      <div class="critic-name">{{ testimonial.source }}</div>
-                    </div>
-                  </div>
-                </div>
-                {% endif %}
-                {% endfor %}
-
-              </div>
-            </div>
-
-            <!-- ================= SLIDER ================= -->
-            <div class="testimonials-container">
-              <div class="swiper testimonials-slider init-swiper"
-                  data-aos="fade-up"
-                  data-aos-delay="400">
-
-                <script type="application/json" class="swiper-config">
-                  {
-                    "loop": true,
-                    "speed": 600,
-                    "autoplay": { "delay": 5000 },
-                    "slidesPerView": 1,
-                    "spaceBetween": 30,
-                    "pagination": {
-                      "el": ".swiper-pagination",
-                      "type": "bullets",
-                      "clickable": true
-                    },
-                    "breakpoints": {
-                      "768": { "slidesPerView": 2 },
-                      "992": { "slidesPerView": 3 }
-                    }
-                  }
-                </script>
-
-                <div class="swiper-wrapper">
-
-                  {% for testimonial in section.testimonials.all %}
+                  {% for testimonial in section.testimonials.all|slice:":3" %}
                   {% if testimonial.is_active %}
-                  <div class="swiper-slide">
-                    <div class="testimonial-item">
+                  <div class="col-md-4">
+                    <div class="critic-review">
+                      <div class="review-quote">"</div>
 
                       <div class="stars">
                         {% for i in "12345"|slice:":testimonial.rating" %}
@@ -710,244 +599,298 @@
 
                       <p>{{ testimonial.quote }}</p>
 
-                      <div class="testimonial-profile">
-                        {% if testimonial.author_image %}
-                        <img src="{{ testimonial.author_image.url }}"
-                            class="img-fluid rounded-circle"
-                            alt="{{ testimonial.author_name }}">
-                        {% endif %}
-                        <div>
-                          <h3>{{ testimonial.author_name }}</h3>
-                          {% if testimonial.author_role %}
-                          <h4>{{ testimonial.author_role }}</h4>
-                          {% endif %}
-                        </div>
+                      <div class="critic-info">
+                        <div class="critic-name">{{ testimonial.source }}</div>
                       </div>
-
                     </div>
                   </div>
                   {% endif %}
                   {% endfor %}
 
                 </div>
+              </div>
 
-                <div class="swiper-pagination"></div>
+              <!-- ================= SLIDER ================= -->
+              <div class="testimonials-container">
+                <div class="swiper testimonials-slider init-swiper"
+                    data-aos="fade-up"
+                    data-aos-delay="400">
+
+                  <script type="application/json" class="swiper-config">
+                    {
+                      "loop": true,
+                      "speed": 600,
+                      "autoplay": { "delay": 5000 },
+                      "slidesPerView": 1,
+                      "spaceBetween": 30,
+                      "pagination": {
+                        "el": ".swiper-pagination",
+                        "type": "bullets",
+                        "clickable": true
+                      },
+                      "breakpoints": {
+                        "768": { "slidesPerView": 2 },
+                        "992": { "slidesPerView": 3 }
+                      }
+                    }
+                  </script>
+
+                  <div class="swiper-wrapper">
+
+                    {% for testimonial in section.testimonials.all %}
+                    {% if testimonial.is_active %}
+                    <div class="swiper-slide">
+                      <div class="testimonial-item">
+
+                        <div class="stars">
+                          {% for i in "12345"|slice:":testimonial.rating" %}
+                            <i class="bi bi-star-fill"></i>
+                          {% endfor %}
+                        </div>
+
+                        <p>{{ testimonial.quote }}</p>
+
+                        <div class="testimonial-profile">
+                          {% if testimonial.author_image %}
+                          <img src="{{ testimonial.author_image.url }}"
+                              class="img-fluid rounded-circle"
+                              alt="{{ testimonial.author_name }}">
+                          {% endif %}
+                          <div>
+                            <h3>{{ testimonial.author_name }}</h3>
+                            {% if testimonial.author_role %}
+                            <h4>{{ testimonial.author_role }}</h4>
+                            {% endif %}
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                  </div>
+
+                  <div class="swiper-pagination"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- ================= OVERALL RATING ================= -->
-        <div class="row">
-          <div class="col-12 text-center" data-aos="fade-up">
-            <div class="overall-rating">
-              <div class="rating-number">{{ section.average_rating }}</div>
+          <!-- ================= OVERALL RATING ================= -->
+          <div class="row">
+            <div class="col-12 text-center" data-aos="fade-up">
+              <div class="overall-rating">
+                <div class="rating-number">{{ section.average_rating }}</div>
 
-              <div class="rating-stars">
-                {% for i in "12345"|slice:":section.average_rating|floatformat:0" %}
-                  <i class="bi bi-star-fill"></i>
-                {% endfor %}
-              </div>
-
-              <p>Based on {{ section.total_reviews }}+ reviews</p>
-
-              <div class="rating-platforms">
-                {% for platform in section.platforms.all %}
-                  <span>{{ platform.name }}</span>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {% endif %}
-      {% endfor %}
-
-    </section><!-- /Testimonials Section -->
-
-    <!-- Faq Section -->
-    <section id="faq" class="faq section">
-
-      {% for section in resume.faq_sections.all %}
-      {% if section.is_active %}
-
-      <!-- Section Title -->
-      <div class="container section-title">
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.subtitle }}</p>
-      </div><!-- End Section Title -->
-
-      <div class="container">
-        <div class="row justify-content-center">
-
-          <div class="col-lg-12"
-              data-aos="fade-up"
-              data-aos-delay="100">
-
-            <div class="faq-container">
-
-              {% for faq in section.faqs.all %}
-              {% if faq.is_active %}
-              <div class="faq-item {% if forloop.first %}faq-active{% endif %}">
-                <h3>{{ faq.question }}</h3>
-
-                <div class="faq-content">
-                  <p>{{ faq.answer }}</p>
+                <div class="rating-stars">
+                  {% for i in "12345"|slice:":section.average_rating|floatformat:0" %}
+                    <i class="bi bi-star-fill"></i>
+                  {% endfor %}
                 </div>
 
-                <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-              {% endif %}
-              {% endfor %}
+                <p>Based on {{ section.total_reviews }}+ reviews</p>
 
+                <div class="rating-platforms">
+                  {% for platform in section.platforms.all %}
+                    <span>{{ platform.name }}</span>
+                  {% endfor %}
+                </div>
+              </div>
             </div>
-
-          </div><!-- End Faq Column-->
+          </div>
 
         </div>
-      </div>
 
-      {% endif %}
-      {% endfor %}
+        {% endif %}
+        {% endfor %}
 
-    </section><!-- /Faq Section -->
+      </section><!-- /Testimonials Section -->
+    {% endif %}
+    <!-- Faq Section -->
+    {% if resume.faq_sections.all %}
+      <section id="faq" class="faq section">
+
+        {% for section in resume.faq_sections.all %}
+        {% if section.is_active %}
+
+        <!-- Section Title -->
+        <div class="container section-title">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.subtitle }}</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+          <div class="row justify-content-center">
+
+            <div class="col-lg-12"
+                data-aos="fade-up"
+                data-aos-delay="100">
+
+              <div class="faq-container">
+
+                {% for faq in section.faqs.all %}
+                {% if faq.is_active %}
+                <div class="faq-item {% if forloop.first %}faq-active{% endif %}">
+                  <h3>{{ faq.question }}</h3>
+
+                  <div class="faq-content">
+                    <p>{{ faq.answer }}</p>
+                  </div>
+
+                  <i class="faq-toggle bi bi-chevron-right"></i>
+                </div><!-- End Faq item-->
+                {% endif %}
+                {% endfor %}
+
+              </div>
+
+            </div><!-- End Faq Column-->
+
+          </div>
+        </div>
+
+        {% endif %}
+        {% endfor %}
+
+      </section><!-- /Faq Section -->
+    {% endif %}
 
     <!-- Contact Section -->
-    <section id="contact" class="contact section light-background">
+    {% if resume.contact_sections.all %}
+      <section id="contact" class="contact section light-background">
 
-      {% for section in resume.contact_sections.all %}
-      {% if section.is_active %}
+        {% for section in resume.contact_sections.all %}
+        {% if section.is_active %}
 
-      <!-- Section Title -->
-      <div class="container section-title">
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.subtitle }}</p>
-      </div><!-- End Section Title -->
+        <!-- Section Title -->
+        <div class="container section-title">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.subtitle }}</p>
+        </div><!-- End Section Title -->
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="row g-4 g-lg-5">
+          <div class="row g-4 g-lg-5">
 
-          <!-- ================= LEFT INFO PANEL ================= -->
-          <div class="col-lg-5">
-            <div class="info-box" data-aos="fade-up" data-aos-delay="200">
+            <!-- ================= LEFT INFO PANEL ================= -->
+            <div class="col-lg-5">
+              <div class="info-box" data-aos="fade-up" data-aos-delay="200">
 
-              <h3>Contact Info</h3>
-              <p>{{ section.description }}</p>
+                <h3>Contact Info</h3>
+                <p>{{ section.description }}</p>
 
-              <!-- Location -->
-              <div class="info-item" data-aos="fade-up" data-aos-delay="300">
-                <div class="icon-box">
-                  <i class="bi bi-geo-alt"></i>
+                <!-- Location -->
+                <div class="info-item" data-aos="fade-up" data-aos-delay="300">
+                  <div class="icon-box">
+                    <i class="bi bi-geo-alt"></i>
+                  </div>
+                  <div class="content">
+                    <h4>Our Location</h4>
+                    {% for line in section.location.splitlines %}
+                    <p>{{ line }}</p>
+                    {% endfor %}
+                  </div>
                 </div>
-                <div class="content">
-                  <h4>Our Location</h4>
-                  {% for line in section.location.splitlines %}
-                  <p>{{ line }}</p>
-                  {% endfor %}
+
+                <!-- Phone Numbers -->
+                <div class="info-item" data-aos="fade-up" data-aos-delay="400">
+                  <div class="icon-box">
+                    <i class="bi bi-telephone"></i>
+                  </div>
+                  <div class="content">
+                    <h4>Phone Number</h4>
+                    {% for phone in section.phone_numbers.splitlines %}
+                    <p>{{ phone }}</p>
+                    {% endfor %}
+                  </div>
                 </div>
+
+                <!-- Email Addresses -->
+                <div class="info-item" data-aos="fade-up" data-aos-delay="500">
+                  <div class="icon-box">
+                    <i class="bi bi-envelope"></i>
+                  </div>
+                  <div class="content">
+                    <h4>Email Address</h4>
+                    {% for email in section.email_addresses.splitlines %}
+                    <p>{{ email }}</p>
+                    {% endfor %}
+                  </div>
+                </div>
+
               </div>
-
-              <!-- Phone Numbers -->
-              <div class="info-item" data-aos="fade-up" data-aos-delay="400">
-                <div class="icon-box">
-                  <i class="bi bi-telephone"></i>
-                </div>
-                <div class="content">
-                  <h4>Phone Number</h4>
-                  {% for phone in section.phone_numbers.splitlines %}
-                  <p>{{ phone }}</p>
-                  {% endfor %}
-                </div>
-              </div>
-
-              <!-- Email Addresses -->
-              <div class="info-item" data-aos="fade-up" data-aos-delay="500">
-                <div class="icon-box">
-                  <i class="bi bi-envelope"></i>
-                </div>
-                <div class="content">
-                  <h4>Email Address</h4>
-                  {% for email in section.email_addresses.splitlines %}
-                  <p>{{ email }}</p>
-                  {% endfor %}
-                </div>
-              </div>
-
             </div>
-          </div>
 
-          <!-- ================= CONTACT FORM ================= -->
-          <div class="col-lg-7">
-            <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
+            <!-- ================= CONTACT FORM ================= -->
+            <div class="col-lg-7">
+              <div class="contact-form" data-aos="fade-up" data-aos-delay="300">
 
-              <h3>Get In Touch</h3>
-              <p>{{ section.description }}</p>
+                <h3>Get In Touch</h3>
+                <p>{{ section.description }}</p>
 
-              <form method="post"
-                    action="{% url 'contact_submit' %}"
-                    class="php-email-form"
-                    data-aos="fade-up"
-                    data-aos-delay="200">
+                <form method="post"
+                      action="{% url 'contact_submit' %}"
+                      class="php-email-form"
+                      data-aos="fade-up"
+                      data-aos-delay="200">
 
-                {% csrf_token %}
+                  {% csrf_token %}
 
-                <div class="row gy-4">
+                  <div class="row gy-4">
 
-                  <div class="col-md-6">
-                    <input type="text"
-                          name="name"
-                          class="form-control"
-                          placeholder="Your Name"
-                          required>
+                    <div class="col-md-6">
+                      <input type="text"
+                            name="name"
+                            class="form-control"
+                            placeholder="Your Name"
+                            required>
+                    </div>
+
+                    <div class="col-md-6">
+                      <input type="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Your Email"
+                            required>
+                    </div>
+
+                    <div class="col-12">
+                      <input type="text"
+                            name="subject"
+                            class="form-control"
+                            placeholder="Subject"
+                            required>
+                    </div>
+
+                    <div class="col-12">
+                      <textarea name="message"
+                                rows="6"
+                                class="form-control"
+                                placeholder="Message"
+                                required></textarea>
+                    </div>
+
+                    <div class="col-12 text-center">
+                      <button type="submit" class="btn">
+                        Send Message
+                      </button>
+                    </div>
+
                   </div>
+                </form>
 
-                  <div class="col-md-6">
-                    <input type="email"
-                          name="email"
-                          class="form-control"
-                          placeholder="Your Email"
-                          required>
-                  </div>
-
-                  <div class="col-12">
-                    <input type="text"
-                          name="subject"
-                          class="form-control"
-                          placeholder="Subject"
-                          required>
-                  </div>
-
-                  <div class="col-12">
-                    <textarea name="message"
-                              rows="6"
-                              class="form-control"
-                              placeholder="Message"
-                              required></textarea>
-                  </div>
-
-                  <div class="col-12 text-center">
-                    <button type="submit" class="btn">
-                      Send Message
-                    </button>
-                  </div>
-
-                </div>
-              </form>
-
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
-      </div>
 
-      {% endif %}
-      {% endfor %}
+        {% endif %}
+        {% endfor %}
 
-    </section><!-- /Contact Section -->
-
+      </section><!-- /Contact Section -->
+    {% endif %}
 
   </main>
 
