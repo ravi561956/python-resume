@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-968$5vtd%v*y$ef$mv%58gqxzz@q4n^q*rhnea3^ngi4h#i_@b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -120,3 +120,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+import os
+
+# Detect environment
+if os.name == 'nt':  # Windows
+    WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+else:  # Linux (EC2)
+    WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf'
