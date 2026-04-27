@@ -112,7 +112,7 @@
     {% if resume.summary %}
     <div class="section">
         <h2>Professional Summary</h2>
-        <p>{{ resume.summary }}</p>
+        <p>{{ resume.summary|safe }}</p>
     </div>
     {% endif %}
 
@@ -173,7 +173,7 @@
                     <div>
                         <h3>{{ item.title }}</h3>
                         <p class="bold">{{ item.company }} | {{ item.date_range }}</p>
-                        <p>{{ item.description }}</p>
+                        <p>{{ item.description|safe }}</p>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -222,7 +222,7 @@
         <ul>
             {% for item in resume.journeys.all %}
                 {% if item.is_active %}
-                    <li>{{ item.description }} ({{ item.year }})</li>
+                    <li>{{ item.description|safe }} ({{ item.year }})</li>
                 {% endif %}
             {% endfor %}
         </ul>

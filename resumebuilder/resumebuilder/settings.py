@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'resume',
+    'django_ckeditor_5',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,19 @@ if os.name == 'nt':  # Windows
     WKHTMLTOPDF_PATH = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
 else:  # Linux (EC2)
     WKHTMLTOPDF_PATH = '/usr/bin/wkhtmltopdf'
+  
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"  
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'underline', 'strikethrough',
+            'link', 'bulletedList', 'numberedList',
+            'blockQuote', 'insertTable',
+            'imageUpload', 'mediaEmbed',
+            'codeBlock', '|',
+            'undo', 'redo'
+        ],
+        'height': 300,
+    }
+}

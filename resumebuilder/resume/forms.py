@@ -7,13 +7,6 @@ class ResumeForm(forms.ModelForm):
     class Meta:
         model = Resume
         fields = '__all__'
-        widgets = {
-            'short_desc': forms.Textarea(attrs={'rows': 3}),
-            'summary': forms.Textarea(attrs={'rows': 3}),
-            'skills': forms.Textarea(attrs={'rows': 2}),
-            'experience': forms.Textarea(attrs={'rows': 4}),
-            'education': forms.Textarea(attrs={'rows': 3}),
-        }
 
 class ProfessionForm(forms.ModelForm):
     class Meta:

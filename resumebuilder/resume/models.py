@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from .utils.image_utils import resize_image
+from django_ckeditor_5.fields import CKEditor5Field
 
 class Resume(models.Model):
     THEME_CHOICES = (
@@ -44,19 +45,15 @@ class Resume(models.Model):
         choices=PDF_TEMPLATE_CHOICES,
         default='pdf1'
     )
-    short_desc = models.TextField(
-        blank=True,
-        default='',
-        help_text="Intro lines about yourself"
-        )
+    short_desc = CKEditor5Field('Short Description', config_name='default')
 
     profile_image = models.ImageField(upload_to='profile/', blank=True, null=True)
     banner_image = models.ImageField(upload_to='banner/', blank=True, null=True)
 
-    summary = models.TextField()
-    skills = models.TextField(help_text="Comma separated")
-    experience = models.TextField()
-    education = models.TextField()
+    summary = CKEditor5Field('Summary', config_name='default')
+    skills = CKEditor5Field('Skills', config_name='default')
+    experience = CKEditor5Field('Experience', config_name='default')
+    education = CKEditor5Field('Education', config_name='default')
 
     theme = models.CharField(max_length=50, choices=THEME_CHOICES, default='meyawo-1.0.0')
 
@@ -202,7 +199,8 @@ class ResumeSkill(models.Model):
     )
 
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
+    description = CKEditor5Field('Description', config_name='default')
+
     icon_class = models.CharField(
         max_length=50,
         help_text="Icon class e.g. bi bi-palette, bi bi-code-slash"
@@ -240,7 +238,7 @@ class ResumeJourney(models.Model):
         help_text="Year or range e.g. 2019 or 2020-2022"
     )
 
-    description = models.TextField()
+    description = CKEditor5Field('Description', config_name='default')
 
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -299,11 +297,8 @@ class Profession(models.Model):
         blank=True
     )
     title = models.CharField(max_length=100,null=True,blank=True)
-    short_desc = models.TextField(
-        blank=True,
-        default='',
-        help_text="Intro lines about yourself"
-        )
+    short_desc = CKEditor5Field('Short Description', config_name='default')
+
     resume_stats = models.ManyToManyField(
         ResumeStat,
         related_name='professions'
@@ -359,11 +354,8 @@ class Journey(models.Model):
         blank=True
     )
     title = models.CharField(max_length=100,null=True,blank=True)
-    short_desc = models.TextField(
-        blank=True,
-        default='',
-        help_text="Intro lines about yourself"
-        )
+    short_desc = CKEditor5Field('Short Description', config_name='default')
+
     icon_class = models.CharField(
         max_length=50,
         help_text="Bootstrap icon class e.g. bi bi-code-slash"
@@ -387,9 +379,8 @@ class Excellence(models.Model):
     company = models.CharField(max_length=150)  # Proin Corporation
     date_range = models.CharField(max_length=50)  # 2022 - Present
 
-    description = models.TextField(
-        help_text="Short paragraph description"
-    )
+    description = CKEditor5Field('Short Paragraph Description', config_name='default')
+
 
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -412,9 +403,7 @@ class ServiceSection(models.Model):
         max_length=100,
         default="Services"
     )
-    subtitle = models.TextField(
-        help_text="Short intro text below section title"
-    )
+    subtitle = CKEditor5Field('Service Sub Title', config_name='default')
     aos_delay = models.PositiveIntegerField(default=200)
     order = models.PositiveIntegerField(default=0)
 
@@ -433,7 +422,8 @@ class Service(models.Model):
     )
 
     title = models.CharField(max_length=150)
-    description = models.TextField()
+    description = CKEditor5Field('Short Paragraph Description', config_name='default')
+
 
     icon_class = models.CharField(
         max_length=50,
@@ -546,7 +536,7 @@ class Testimonial(models.Model):
         on_delete=models.CASCADE
     )
 
-    quote = models.TextField()
+    quote = CKEditor5Field('Quote', config_name='default')
 
     rating = models.PositiveSmallIntegerField(
         default=5,
@@ -628,8 +618,8 @@ class FAQ(models.Model):
         on_delete=models.CASCADE
     )
 
-    question = models.CharField(max_length=255)
-    answer = models.TextField()
+    question = CKEditor5Field('Question', config_name='default')
+    answer = CKEditor5Field('Answer', config_name='default')
 
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
@@ -650,11 +640,8 @@ class ContactSection(models.Model):
     )
 
     title = models.CharField(max_length=100, default="Contact")
-    subtitle = models.TextField()
-
-    description = models.TextField(
-        help_text="Left panel description"
-    )
+    subtitle = CKEditor5Field('Sub title', config_name='default')
+    description = CKEditor5Field('Left Pannel Description', config_name='default')
 
     location = models.TextField()
     phone_numbers = models.TextField(
@@ -684,7 +671,7 @@ class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     subject = models.CharField(max_length=200)
-    message = models.TextField()
+    message = CKEditor5Field('Message', config_name='default')
 
     created_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)

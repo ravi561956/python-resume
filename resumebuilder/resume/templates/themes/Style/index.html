@@ -68,23 +68,6 @@
           <li><a href="#resume">Resume</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
           <li><a href="#services">Services</a></li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
           <li><a href="#contact">Contact</a></li>
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -104,7 +87,7 @@
           <div class="col-lg-6 hero-content" data-aos="fade-right" data-aos-delay="100">
             <div class="content-wrapper">
               <h1 class="hero-title">Creative <span class="typed" data-typed-items="{{ resume.tag_string }}"></span></h1>
-              <p class="lead">{{ resume.short_desc }}</p>
+              <p class="lead">{{ resume.short_desc|safe }}</p>
               {% if resume.stats.all %}
                 <div class="hero-stats" data-aos="fade-up" data-aos-delay="200">
                   {% for stat in resume.stats.all %}
@@ -190,7 +173,7 @@
             <div class="about-content">
               <div class="intro">
                 <h2>Hi, I'm {{ resume.name }} - {{ resume.position }}</h2>
-                <p>{{ resume.summary }}</p>
+                <p>{{ resume.summary|safe }}</p>
               </div>
             {% if resume.journeys.all %}
               <div class="journey-timeline"
@@ -205,7 +188,7 @@
                   <div class="timeline-item">
                     <div class="year">{{ item.year }}</div>
                     <div class="description">
-                      {{ item.description }}
+                      {{ item.description|safe }}
                     </div>
                   </div>
                   {% endif %}
@@ -242,7 +225,7 @@
     <!-- Skills Section -->
     <section id="skills" class="skills section">
       <div class="container section-title">
-        <h2>Skills </h2>
+        <h2>Technical Skills </h2>
       </div>
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="row">
@@ -321,7 +304,7 @@
                   <i class="{{ journey.icon_class }}"></i>
                   {{ journey.title }}
                 </h2>
-                <p class="section-subtitle">{{ journey.short_desc }}</p>
+                <p class="section-subtitle">{{ journey.short_desc|safe }}</p>
               </div>
 
               {% if forloop.first %}
@@ -338,7 +321,7 @@
                     <span class="duration">{{ item.date_range }}</span>
                   </div>
                   <div class="card-body">
-                    <p>{{ item.description }}</p>
+                    <p>{{ item.description|safe }}</p>
                   </div>
                 </div>
                 {% endif %}
@@ -359,7 +342,7 @@
                       <span class="year">{{ item.date_range }}</span>
                     </div>
                     <h4 class="institution">{{ item.company }}</h4>
-                    <p>{{ item.description }}</p>
+                    <p>{{ item.description|safe }}</p>
                   </div>
                 </div>
                 {% endif %}
@@ -416,7 +399,7 @@
             data-aos="fade-up"
             data-aos-delay="{{ section.aos_delay }}">
           <h2>{{ section.title }}</h2>
-          <p>{{ section.subtitle }}</p>
+          <p>{{ section.subtitle|safe }}</p>
         </div><!-- End Section Title -->
 
         <div class="container"
@@ -436,7 +419,7 @@
                 </div>
 
                 <h3>{{ service.title }}</h3>
-                <p>{{ service.description }}</p>
+                <p>{{ service.description|safe }}</p>
 
                 {% if service.learn_more_url %}
                 <div class="card-links">
@@ -469,7 +452,7 @@
         <!-- Section Title -->
         <div class="container section-title">
           <h2>{{ section.title }}</h2>
-          <p>{{ section.subtitle }}</p>
+          <p>{{ section.subtitle|safe }}</p>
         </div><!-- End Section Title -->
 
         <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
@@ -574,7 +557,7 @@
         <!-- Section Title -->
         <div class="container section-title">
           <h2>{{ section.title }}</h2>
-          <p>{{ section.subtitle }}</p>
+          <p>{{ section.subtitle|safe }}</p>
         </div><!-- End Section Title -->
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -597,7 +580,7 @@
                         {% endfor %}
                       </div>
 
-                      <p>{{ testimonial.quote }}</p>
+                      <p>{{ testimonial.quote|safe }}</p>
 
                       <div class="critic-info">
                         <div class="critic-name">{{ testimonial.source }}</div>
@@ -717,7 +700,7 @@
         <!-- Section Title -->
         <div class="container section-title">
           <h2>{{ section.title }}</h2>
-          <p>{{ section.subtitle }}</p>
+          <p>{{ section.subtitle|safe }}</p>
         </div><!-- End Section Title -->
 
         <div class="container">
@@ -735,7 +718,7 @@
                   <h3>{{ faq.question }}</h3>
 
                   <div class="faq-content">
-                    <p>{{ faq.answer }}</p>
+                    <p>{{ faq.answer|safe }}</p>
                   </div>
 
                   <i class="faq-toggle bi bi-chevron-right"></i>
@@ -766,7 +749,7 @@
         <!-- Section Title -->
         <div class="container section-title">
           <h2>{{ section.title }}</h2>
-          <p>{{ section.subtitle }}</p>
+          <p>{{ section.subtitle|safe }}</p>
         </div><!-- End Section Title -->
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -778,7 +761,7 @@
               <div class="info-box" data-aos="fade-up" data-aos-delay="200">
 
                 <h3>Contact Info</h3>
-                <p>{{ section.description }}</p>
+                <p>{{ section.description|safe }}</p>
 
                 <!-- Location -->
                 <div class="info-item" data-aos="fade-up" data-aos-delay="300">

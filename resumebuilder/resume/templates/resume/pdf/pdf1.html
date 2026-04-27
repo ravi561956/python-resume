@@ -281,7 +281,7 @@
                                             {% if item.is_active %}
                                                 <li>
                                                     <p>
-                                                        {{ item.description }} - ({{ item.year }})
+                                                        {{ item.description|safe }} - ({{ item.year }})
                                                     </p>
                                                 </li>
                                             {% endif %}
@@ -312,7 +312,7 @@
                             </h2>
                             <div class="smallText">
                             <p>
-                                {{ resume.summary }}
+                                {{ resume.summary|safe }}
                             </p>
                             </div>
                         </div>
@@ -339,7 +339,7 @@
                                                 <span>
                                                     {{ item.company }}
                                                 </span>
-                                                <p>{{ item.description }}</p>
+                                                <p>{{ item.description|safe }}</p>
                                                 </div>
                                             </li>
                                         {% endfor %}

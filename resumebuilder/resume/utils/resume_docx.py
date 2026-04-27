@@ -3,6 +3,16 @@ from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from datetime import datetime
 from io import BytesIO
+from bs4 import BeautifulSoup
+
+
+# =============================
+# HTML → TEXT
+# =============================
+def html_to_text(html):
+    if not html:
+        return ""
+    return BeautifulSoup(html, "html.parser").get_text("\n")
 
 
 # =============================
@@ -18,16 +28,12 @@ def set_paragraph_spacing(paragraph, before=5, after=5, line=1):
 def generate_resume_docx(resume):
     doc = Document()
 
-    # =============================
-    # GLOBAL STYLE FIX (IMPORTANT)
-    # =============================
+    # GLOBAL STYLE
     style = doc.styles['Normal']
     style.paragraph_format.space_before = Pt(0)
     style.paragraph_format.space_after = Pt(0)
 
-    # =============================
     # PAGE MARGINS
-    # =============================
     section = doc.sections[0]
     section.top_margin = Inches(0.5)
     section.bottom_margin = Inches(0.5)
@@ -38,7 +44,6 @@ def generate_resume_docx(resume):
     # HEADER
     # =============================
     table = doc.add_table(rows=1, cols=2)
-    table.autofit = True
 
     left = table.rows[0].cells[0]
     right = table.rows[0].cells[1]
@@ -48,54 +53,33 @@ def generate_resume_docx(resume):
     run = p.add_run(resume.name)
     run.bold = True
     run.font.size = Pt(20)
-    set_paragraph_spacing(p)
 
     p = left.add_paragraph(resume.position)
-    p.runs[0].font.size = Pt(12)
-    set_paragraph_spacing(p)
 
     # RIGHT
     p = right.paragraphs[0]
     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     current_date = datetime.now().strftime("%d %b %Y")
     p.add_run(f"Date: {current_date}")
-    set_paragraph_spacing(p)
 
     # =============================
     # CONTACT
     # =============================
-    p = doc.add_paragraph()
-    p.add_run("Phone: ").bold = True
-    p.add_run(resume.phone)
-    set_paragraph_spacing(p)
+    doc.add_paragraph(f"Phone: {resume.phone}")
+    doc.add_paragraph(f"Email: {resume.email}")
+    doc.add_paragraph(f"Address: {resume.address}")
 
-    p = doc.add_paragraph()
-    p.add_run("Email: ").bold = True
-    p.add_run(resume.email)
-    set_paragraph_spacing(p)
-
-    p = doc.add_paragraph()
-    p.add_run("Address: ").bold = True
-    p.add_run(resume.address)
-    set_paragraph_spacing(p)
-
-    if getattr(resume, "website", ""):
-        p = doc.add_paragraph()
-        p.add_run("Website: ").bold = True
-        p.add_run(resume.website)
-        set_paragraph_spacing(p)
+    if resume.website:
+        doc.add_paragraph(f"Website: {resume.website}")
 
     # =============================
     # SUMMARY
     # =============================
-    if resume.summary:
-        p = doc.add_paragraph("\nProfessional Summary")
-        run = p.runs[0]
-        run.bold = True
-        run.font.size = Pt(14)
-        set_paragraph_spacing(p, before=6, after=2)
-        p = doc.add_paragraph(resume.summary)
-        set_paragraph_spacing(p)
+    summary = html_to_text(resume.summary)
+
+    if summary:
+        doc.add_paragraph("Professional Summary").runs[0].bold = True
+        doc.add_paragraph(summary)
 
     # =============================
     # SKILLS
@@ -106,11 +90,7 @@ def generate_resume_docx(resume):
             skills.append(skill.name)
 
     if skills:
-        p = doc.add_paragraph("\nSkills")
-        run = p.runs[0]
-        run.bold = True
-        run.font.size = Pt(14)
-        set_paragraph_spacing(p, before=6, after=2)
+        doc.add_paragraph("Skills").runs[0].bold = True
 
         table = doc.add_table(rows=1, cols=3)
 
@@ -123,36 +103,21 @@ def generate_resume_docx(resume):
         for i, col in enumerate(col_data):
             cell = table.rows[0].cells[i]
             for skill in col:
-                p = cell.add_paragraph(f"• {skill}")
-                set_paragraph_spacing(p, before=0, after=0)
-
-        # remove hidden spacing inside table
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    set_paragraph_spacing(paragraph, 0, 0)
+                cell.add_paragraph(f"• {skill}")
 
     # =============================
     # EXPERIENCE
     # =============================
     if resume.journey.all():
-        p = doc.add_paragraph("\nWork Experience")
-        run = p.runs[0]
-        run.bold = True
-        run.font.size = Pt(14)
-        set_paragraph_spacing(p, before=6, after=2)
+        doc.add_paragraph("Work Experience").runs[0].bold = True
 
         for journey in resume.journey.all():
             for item in journey.excellences.all():
-                p = doc.add_paragraph(item.title)
-                p.runs[0].bold = True
-                set_paragraph_spacing(p)
+                doc.add_paragraph(item.title).runs[0].bold = True
+                doc.add_paragraph(f"{item.company} | {item.date_range}")
 
-                p = doc.add_paragraph(f"{item.company} | {item.date_range}")
-                set_paragraph_spacing(p)
-
-                p = doc.add_paragraph(item.description)
-                set_paragraph_spacing(p)
+                desc = html_to_text(item.description)
+                doc.add_paragraph(desc)
 
     # =============================
     # CERTIFICATIONS
@@ -164,11 +129,7 @@ def generate_resume_docx(resume):
                 certs.append(cert.title)
 
     if certs:
-        p = doc.add_paragraph("\nCertifications")
-        run = p.runs[0]
-        run.bold = True
-        run.font.size = Pt(14)
-        set_paragraph_spacing(p, before=6, after=2)
+        doc.add_paragraph("Certifications").runs[0].bold = True
 
         table = doc.add_table(rows=1, cols=2)
 
@@ -180,29 +141,18 @@ def generate_resume_docx(resume):
         for i, col in enumerate(col_data):
             cell = table.rows[0].cells[i]
             for cert in col:
-                p = cell.add_paragraph(f"• {cert}")
-                set_paragraph_spacing(p)
-
-        # remove spacing inside table
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    set_paragraph_spacing(paragraph, 0, 0)
+                cell.add_paragraph(f"• {cert}")
 
     # =============================
     # EDUCATION
     # =============================
     if resume.journeys.all():
-        p = doc.add_paragraph("\nEducation")
-        run = p.runs[0]
-        run.bold = True
-        run.font.size = Pt(14)
-        set_paragraph_spacing(p, before=6, after=2)
+        doc.add_paragraph("Education").runs[0].bold = True
 
         for item in resume.journeys.all():
             if item.is_active:
-                p = doc.add_paragraph(f"{item.description} ({item.year})")
-                set_paragraph_spacing(p)
+                desc = html_to_text(item.description)
+                doc.add_paragraph(f"{desc} ({item.year})")
 
     # =============================
     # SAVE
